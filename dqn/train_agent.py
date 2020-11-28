@@ -3,7 +3,7 @@ import gym
 import torch
 from dqn.agent import Agent
 from dqn.replay_buffer import ReplayBuffer
-from logger import Logger
+from dqn.logger import Logger
 from tqdm import tqdm
 
 

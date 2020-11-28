@@ -1,9 +1,9 @@
 import gym
-from network import q_network_mlp_creator
+from dqn.network import q_network_mlp_creator
 from dqn.agent import Agent
 from dqn.replay_buffer import ReplayBuffer
 from dqn.train_agent import train_agent
-from logger import Logger
+from dqn.logger import Logger
 
 config = {
     'device': 'cpu',
