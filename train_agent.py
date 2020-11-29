@@ -68,7 +68,6 @@ def train_agent(env, agents, num_it, num_ep, max_ts, target_update_freq, gamma, 
                 h0 = h20.clone()
                 h1 = h21.clone()
 
-
         # training
         for j in range(env.num_user):
             agents[j].train(s_batch[j], h0_batch[j], h1_batch[j], a_batch[j], r_batch[j], s2_batch[j], h20_batch[j],
@@ -79,5 +78,5 @@ def train_agent(env, agents, num_it, num_ep, max_ts, target_update_freq, gamma, 
                 agents[j].update_target()
 
         # print reward
-        if it % 2 == 0:
+        if it % 100 == 0:
             print('Iteration {}: avg reward is {:.4f}, channel utilization is {:.4f}'.format(it, avg_r / cnt, avg_utils / cnt))

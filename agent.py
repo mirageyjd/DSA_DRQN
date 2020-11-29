@@ -5,9 +5,9 @@ import numpy as np
 
 
 class QNetwork(nn.Module):
-    def __init__(self, env):
+    def __init__(self, env, lstm_hidden_size):
         super(QNetwork, self).__init__()
-        self.lstm = nn.LSTM(input_size=env.n_observation, hidden_size=64, num_layers=1)
+        self.lstm = nn.LSTM(input_size=env.n_observation, hidden_size=lstm_hidden_size, num_layers=1)
         self.fc_1 = nn.Sequential(
             nn.Linear(64, 32),
             nn.ReLU(True)
@@ -23,8 +23,8 @@ class QNetwork(nn.Module):
 
 
 class QFunction(object):
-    def __init__(self, env, device):
-        self.q_network = QNetwork(env).to(device=device)
+    def __init__(self, env, device, lstm_hidden_size):
+        self.q_network = QNetwork(env, lstm_hidden_size).to(device=device)
         self.optimizer = optim.Adam(self.q_network.parameters(), lr=0.001, eps=1e-08)
 
     # return argmax(q(s,a))
@@ -65,11 +65,11 @@ class QFunction(object):
 
 # DRQN Agent
 class Agent(object):
-    def __init__(self, env, device):
+    def __init__(self, env, device, lstm_hidden_size):
         self.device = device
 
         self.env = env
-        self.q_func = QFunction(env, device)
+        self.q_func = QFunction(env, device, lstm_hidden_size)
         self.target_q_func = QFunction(env, device)
         self.target_q_func.load_model(self.q_func.get_model())
 
