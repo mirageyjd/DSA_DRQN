@@ -13,7 +13,7 @@ class DsaCliqueEnv(object):
 
         # space
         self.n_action = num_channel + 1
-        self.n_observation = num_channel * 2 + 1
+        self.n_observation = num_channel + 2
 
         # timestamp
         self.t = 0
@@ -31,15 +31,16 @@ class DsaCliqueEnv(object):
         obs = np.zeros((self.num_user, self.n_observation), dtype=int)
 
         for i in range(self.num_user):
-            if 0 < action[i] <= self.num_channel:
+            obs[i, action[i]] = 1
+            if action[i] > 0:
                 in_use[action[i] - 1] += 1
         for i in range(self.num_user):
-            if 0 < action[i] <= self.num_channel:
+            if action[i] > 0:
                 if in_use[action[i] - 1] > 1:   # conflict
                     r[i] = self.r_fail
                 else:                           # succeed
                     r[i] = self.r_succeed
-                    obs[i, action[i] - 1] = 1
+                    obs[i, -1] = 1
             else:
                 r[i] = self.r_idle
 
