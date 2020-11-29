@@ -44,4 +44,4 @@ class DsaCliqueEnv(object):
             else:
                 r[i] = self.r_idle
 
-        return obs, r, False, None
+        return obs, r, False, in_use
