@@ -70,7 +70,7 @@ class Agent(object):
 
         self.env = env
         self.q_func = QFunction(env, device, lstm_hidden_size)
-        self.target_q_func = QFunction(env, device)
+        self.target_q_func = QFunction(env, device, lstm_hidden_size)
         self.target_q_func.load_model(self.q_func.get_model())
 
     # take action under epsilon-greedy policy
