@@ -7,12 +7,12 @@ import numpy as np
 class QNetwork(nn.Module):
     def __init__(self, env):
         super(QNetwork, self).__init__()
-        self.lstm = nn.LSTM(input_size=env.n_observation, hidden_size=128, num_layers=1, batch_first=True)
+        self.lstm = nn.LSTM(input_size=env.n_observation, hidden_size=64, num_layers=1)
         self.fc_1 = nn.Sequential(
-            nn.Linear(128, 64),
+            nn.Linear(64, 32),
             nn.ReLU(True)
         )
-        self.fc_2 = nn.Linear(64, env.n_action)
+        self.fc_2 = nn.Linear(32, env.n_action)
 
     def forward(self, state_in, hidden0, hidden1):
         hidden = (hidden0.unsqueeze(0), hidden1.unsqueeze(0))
@@ -75,13 +75,14 @@ class Agent(object):
 
     # take action under epsilon-greedy policy
     def action(self, state, hidden0, hidden1, epsilon):
+        s_tensor = torch.from_numpy(state).unsqueeze(0).to(device=self.device, dtype=torch.float)
+        h0_tensor = hidden0.unsqueeze(0).to(device=self.device)
+        h1_tensor = hidden1.unsqueeze(0).to(device=self.device)
+        q_argmax, new_hidden = self.q_func.argmax(s_tensor, h0_tensor, h1_tensor)
+
         if np.random.uniform() <= epsilon:
-            return np.random.randint(0, self.env.n_action)
+            return np.random.randint(0, self.env.n_action), new_hidden
         else:
-            s_tensor = torch.from_numpy(state).unsqueeze(0).to(device=self.device, dtype=torch.float)
-            h0_tensor = hidden0.unsqueeze(0).to(device=self.device)
-            h1_tensor = hidden1.unsqueeze(0).to(device=self.device)
-            q_argmax, new_hidden = self.q_func.argmax(s_tensor, h0_tensor, h1_tensor)
             return q_argmax, new_hidden
 
     # train the agent with a mini-batch of transition (s, h, a, r, s2, h2)

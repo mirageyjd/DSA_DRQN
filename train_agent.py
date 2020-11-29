@@ -25,7 +25,7 @@ def train_agent(env, agents, num_it, num_ep, max_ts, target_update_freq, gamma, 
     batch_size = num_ep * max_ts
     s_batch = torch.empty((env.num_user, batch_size, env.n_observation), dtype=torch.int)
     s2_batch = torch.empty((env.num_user, batch_size, env.n_observation), dtype=torch.int)
-    a_batch = torch.empty((env.num_user, batch_size), dtype=torch.int)
+    a_batch = torch.empty((env.num_user, batch_size), dtype=torch.int64)
     r_batch = torch.empty((env.num_user, batch_size), dtype=torch.float)
     h0_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float)
     h1_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float)
@@ -79,5 +79,5 @@ def train_agent(env, agents, num_it, num_ep, max_ts, target_update_freq, gamma, 
                 agents[j].update_target()
 
         # print reward
-        if it % 100 == 0:
-            print('Iteration {}: avg reward is {}, channel utilization is {}'.format(it, avg_r / cnt, avg_utils / cnt))
+        if it % 2 == 0:
+            print('Iteration {}: avg reward is {:.4f}, channel utilization is {:.4f}'.format(it, avg_r / cnt, avg_utils / cnt))
