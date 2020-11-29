@@ -11,19 +11,24 @@ class DsaCliqueEnv(object):
         self.r_succeed = r_succeed
         self.r_idle = r_idle
 
+        # space
+        self.n_action = num_channel + 1
+        self.n_observation = num_channel * 2 + 1
+
         # timestamp
         self.t = 0
 
     def reset(self):
         self.t = 0
-        obs = np.zeros((self.num_user, self.num_channel), dtype=int)
+        obs = np.zeros((self.num_user, self.n_observation), dtype=int)
+        obs[:, 0] = 1
         return obs
 
     def step(self, action):
         self.t += 1
         in_use = np.zeros(self.num_channel, dtype=int)
         r = np.zeros(self.num_user)
-        obs = np.zeros((self.num_user, self.num_channel), dtype=int)
+        obs = np.zeros((self.num_user, self.n_observation), dtype=int)
 
         for i in range(self.num_user):
             if 0 < action[i] <= self.num_channel:
