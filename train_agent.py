@@ -1,10 +1,11 @@
 import torch
 import numpy as np
 from tqdm import tqdm
+import os
 
 
-def train_agent(env, device, agents, num_it, num_ep, max_ts, target_update_freq, gamma, lstm_hidden_size, eps_start,
-                eps_end, eps_end_it):
+def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_update_freq, gamma, lstm_hidden_size,
+                eps_start, eps_end, eps_end_it):
     """
     env:                environment
     device:             cpu or gpu
@@ -22,6 +23,11 @@ def train_agent(env, device, agents, num_it, num_ep, max_ts, target_update_freq,
     eps_end:            epsilon at the end of training
     eps_end_it:         number of iterations token to reach ep_end in linearly-annealed epsilon-greedy policy
     """
+
+    log_dir = './' + exp_name + '/'
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    log_file = open(log_dir + 'log.txt', 'w+')
 
     batch_size = num_ep * max_ts
     s_batch = torch.empty((env.num_user, batch_size, env.n_observation), dtype=torch.float).to(device=device)
@@ -80,4 +86,10 @@ def train_agent(env, device, agents, num_it, num_ep, max_ts, target_update_freq,
 
         # print reward
         if it % 100 == 0:
-            print('Iteration {}: avg reward is {:.4f}, channel utilization is {:.4f}'.format(it, avg_r / cnt, avg_utils / cnt))
+            log_file.write('Iteration {}: avg reward is {:.4f}, channel utilization is {:.4f}'.format(it, avg_r / cnt,
+                                                                                                      avg_utils / cnt))
+    log_file.close()
+    for i in range(env.num_user):
+        model = agents[i].get_model()
+        torch.save(model.state_dict(), log_dir + 'agent_' + str(i) + '.model')
+
