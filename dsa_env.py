@@ -20,7 +20,7 @@ class DsaCliqueEnv(object):
 
     def reset(self):
         self.t = 0
-        obs = np.zeros((self.num_user, self.n_observation), dtype=int)
+        obs = np.zeros((self.num_user, self.n_observation), dtype=float)
         obs[:, 0] = 1
         return obs
 
@@ -28,7 +28,7 @@ class DsaCliqueEnv(object):
         self.t += 1
         in_use = np.zeros(self.num_channel, dtype=int)
         r = np.zeros(self.num_user)
-        obs = np.zeros((self.num_user, self.n_observation), dtype=int)
+        obs = np.zeros((self.num_user, self.n_observation), dtype=float)
 
         for i in range(self.num_user):
             obs[i, action[i]] = 1

@@ -3,10 +3,11 @@ import numpy as np
 from tqdm import tqdm
 
 
-def train_agent(env, agents, num_it, num_ep, max_ts, target_update_freq, gamma, lstm_hidden_size, eps_start, eps_end,
-                eps_end_it):
+def train_agent(env, device, agents, num_it, num_ep, max_ts, target_update_freq, gamma, lstm_hidden_size, eps_start,
+                eps_end, eps_end_it):
     """
     env:                environment
+    device:             cpu or gpu
     agents:             list of agents, specified by env.num_user
 
     num_it:             num of iterations
@@ -23,14 +24,14 @@ def train_agent(env, agents, num_it, num_ep, max_ts, target_update_freq, gamma, 
     """
 
     batch_size = num_ep * max_ts
-    s_batch = torch.empty((env.num_user, batch_size, env.n_observation), dtype=torch.int)
-    s2_batch = torch.empty((env.num_user, batch_size, env.n_observation), dtype=torch.int)
-    a_batch = torch.empty((env.num_user, batch_size), dtype=torch.int64)
-    r_batch = torch.empty((env.num_user, batch_size), dtype=torch.float)
-    h0_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float)
-    h1_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float)
-    h20_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float)
-    h21_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float)
+    s_batch = torch.empty((env.num_user, batch_size, env.n_observation), dtype=torch.float).to(device=device)
+    s2_batch = torch.empty((env.num_user, batch_size, env.n_observation), dtype=torch.float).to(device=device)
+    a_batch = torch.empty((env.num_user, batch_size), dtype=torch.int64).to(device=device)
+    r_batch = torch.empty((env.num_user, batch_size), dtype=torch.float).to(device=device)
+    h0_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float).to(device=device)
+    h1_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float).to(device=device)
+    h20_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float).to(device=device)
+    h21_batch = torch.empty((env.num_user, batch_size, lstm_hidden_size), dtype=torch.float).to(device=device)
     a = np.zeros(env.num_user, dtype=int)
 
     for it in tqdm(range(1, num_it + 1)):
@@ -42,8 +43,8 @@ def train_agent(env, agents, num_it, num_ep, max_ts, target_update_freq, gamma, 
         avg_utils = 0
         for ep in range(num_ep):
             s = env.reset()
-            h0 = torch.normal(mean=0, std=0.01, size=(env.num_user, lstm_hidden_size))
-            h1 = torch.normal(mean=0, std=0.01, size=(env.num_user, lstm_hidden_size))
+            h0 = torch.normal(mean=0, std=0.01, size=(env.num_user, lstm_hidden_size)).to(device=device)
+            h1 = torch.normal(mean=0, std=0.01, size=(env.num_user, lstm_hidden_size)).to(device=device)
             h20 = h0.clone()
             h21 = h1.clone()
             for t in range(0, max_ts):

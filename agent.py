@@ -76,8 +76,8 @@ class Agent(object):
     # take action under epsilon-greedy policy
     def action(self, state, hidden0, hidden1, epsilon):
         s_tensor = torch.from_numpy(state).unsqueeze(0).to(device=self.device, dtype=torch.float)
-        h0_tensor = hidden0.unsqueeze(0).to(device=self.device)
-        h1_tensor = hidden1.unsqueeze(0).to(device=self.device)
+        h0_tensor = hidden0.unsqueeze(0)
+        h1_tensor = hidden1.unsqueeze(0)
         q_argmax, new_hidden = self.q_func.argmax(s_tensor, h0_tensor, h1_tensor)
 
         if np.random.uniform() <= epsilon:
@@ -88,16 +88,6 @@ class Agent(object):
     # train the agent with a mini-batch of transition (s, h, a, r, s2, h2)
     # due to env we do not need "done" here
     def train(self, s_batch, h0_batch, h1_batch, a_batch, r_batch, s2_batch, h20_batch, h21_batch, gamma):
-        # move tensors to training device and set data type of tensors
-        s_batch = s_batch.to(device=self.device, dtype=torch.float)
-        h0_batch = h0_batch.to(device=self.device)
-        h1_batch = h1_batch.to(device=self.device)
-        a_batch = a_batch.to(device=self.device)
-        r_batch = r_batch.to(device=self.device)
-        s2_batch = s2_batch.to(device=self.device, dtype=torch.float)
-        h20_batch = h20_batch.to(device=self.device)
-        h21_batch = h21_batch.to(device=self.device)
-
         target_batch = r_batch + gamma * self.target_q_func.max_batch(s2_batch, h20_batch, h21_batch)
         self.q_func.update(s_batch, a_batch, h0_batch, h1_batch, target_batch)
 
