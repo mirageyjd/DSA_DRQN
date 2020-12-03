@@ -24,6 +24,7 @@ class QNetwork(nn.Module):
 
 class QFunction(object):
     def __init__(self, env, device, lstm_hidden_size):
+        self.device = device
         self.q_network = QNetwork(env, lstm_hidden_size).to(device=device)
         self.optimizer = optim.Adam(self.q_network.parameters(), lr=0.001, eps=1e-08)
 
@@ -42,7 +43,7 @@ class QFunction(object):
         # Calculate the softmax prob dist
         q_s *= beta
         q_s = q_s.exp()
-        q_s = (1 - epsilon) * (q_s / q_s.sum()) + (epsilon / len(q_s)) * torch.ones(q_s.shape)
+        q_s = (1 - epsilon) * (q_s / q_s.sum()) + (epsilon / len(q_s)) * torch.ones(q_s.shape).to(device=self.device)
         q_s = q_s.squeeze(0)
         prob_dist = [float(i) / sum(q_s.tolist()) for i in q_s.tolist()]
         action = np.random.choice(np.arange(0, len(q_s)), p=prob_dist)
