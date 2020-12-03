@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 from tqdm import tqdm
+from agent import Agent
 import os
 
 
@@ -93,3 +94,60 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
         model = agents[i].get_model()
         torch.save(model.state_dict(), log_dir + 'agent_' + str(i) + '.model')
 
+
+def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end):
+
+    log_dir = './' + exp_name + '/'
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    log_file = open(log_dir + '_eval_log.txt', 'w+')
+
+    # Load trained networks and build agents
+    agents = []
+    for i in range(len(model_files)):
+        a = Agent(env=env, device=device, lstm_hidden_size=32)
+        a.load_model_from_state_dict(torch.load(model_files[i]))
+        agents.append(a)
+    
+    lstm_hidden_size = agents[0].q_func.q_network.hidden_size
+    epsilon = eps_end
+
+    # Evaluation
+    for ep in range(num_ep):
+        s = env.reset()
+        h0 = torch.normal(mean=0,
+                        std=0.01,
+                        size=(env.num_user, lstm_hidden_size)).to(device=device)
+        h1 = torch.normal(mean=0,
+                        std=0.01,
+                        size=(env.num_user, lstm_hidden_size)).to(device=device)
+        h20 = h0.clone()
+        h21 = h1.clone()
+        a = np.zeros(env.num_user, dtype=int)
+        user_r = np.zeros(env.num_user, dtype=float)
+        avg_r = 0.0
+        avg_utils = 0.0
+
+        for t in range(max_ts):
+            for j in range(env.num_user):
+                a[j], (h20[j], h21[j]) = agents[j].action(s[j], h0[j], h1[j], epsilon)
+            s2, r, done, channel_status = env.step(a)
+            user_r += r
+
+            avg_r += r.sum() / r.size
+            avg_utils += np.sum(channel_status == 1) / channel_status.size
+            s = s2
+            h0 = h20.clone()
+            h1 = h21.clone()
+
+        # Calculate the avg reward / timestamp
+        user_r /= max_ts
+        avg_r /= max_ts
+        avg_utils /= max_ts
+        log_file.write('Episode {}: Eval results:\n'.format(str(ep)))
+        log_file.write('Avg reward: {:.4f} \nAvg channel util: {:.4f}\n'.format(
+            avg_r, avg_utils))
+        for i in range(user_r):
+            log_file.write('User {} avg reward / timestamp: {:.4f}\n'.format(i, user_r[i]))
+
+    log_file.close()
