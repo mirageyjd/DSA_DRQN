@@ -100,7 +100,7 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
     log_dir = './' + exp_name + '/'
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
-    log_file = open(log_dir + '_eval_log.txt', 'w+')
+    log_file = open(log_dir + 'eval_log.txt', 'w+')
 
     # Load trained networks and build agents
     agents = []
@@ -146,7 +146,7 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
         log_file.write('Episode {}: Eval results:\n'.format(str(ep)))
         log_file.write('Avg reward: {:.4f} \nAvg channel util: {:.4f}\n'.format(
             avg_r, avg_utils))
-        for i in range(user_r):
+        for i in range(len(user_r)):
             log_file.write('User {} avg reward / timestamp: {:.4f}\n'.format(i, user_r[i]))
 
     log_file.close()
