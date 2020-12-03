@@ -95,7 +95,7 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
         torch.save(model.state_dict(), log_dir + 'agent_' + str(i) + '.model')
 
 
-def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end):
+def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm_hidden_size):
 
     log_dir = './' + exp_name + '/'
     if not os.path.exists(log_dir):
@@ -105,11 +105,10 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end):
     # Load trained networks and build agents
     agents = []
     for i in range(len(model_files)):
-        a = Agent(env=env, device=device, lstm_hidden_size=32)
+        a = Agent(env=env, device=device, lstm_hidden_size=lstm_hidden_size)
         a.load_model_from_state_dict(torch.load(model_files[i]))
         agents.append(a)
     
-    lstm_hidden_size = agents[0].q_func.q_network.hidden_size
     epsilon = eps_end
 
     # Evaluation

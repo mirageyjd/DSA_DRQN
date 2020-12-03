@@ -27,6 +27,8 @@ if __name__ == "__main__":
     elif args.mode == 'eval':
         env = DsaCliqueEnv(
             num_user=num_user, num_channel=num_channel, r_fail=-1, r_idle=0, r_succeed=1)
-        eval_agent(env=env, device=device, exp_name=exp_name, model_files=model_files, num_ep=5, max_ts=100, eps_end=0.01)
+        eval_agent(
+            env=env, device=device, exp_name=exp_name, model_files=model_files, num_ep=5,
+            max_ts=100, eps_end=0.01, lstm_hidden_size=lstm_hidden_size)
     else:
         raise Exception("Unsupported mode.")
