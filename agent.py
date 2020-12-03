@@ -34,6 +34,20 @@ class QFunction(object):
         q_max, q_argmax = q_s.max(1)
         return q_argmax.item(), new_hidden
 
+    # Return action based on Exp3 strategy,
+    # which is a mix of softmax and epsilon-greedy
+    def argmax_exp3(self, state, hidden0, hidden1, epsilon, beta):
+        with torch.no_grad():
+            q_s, new_hidden = self.q_network(state, hidden0, hidden1)
+        # Calculate the softmax prob dist
+        q_s *= beta
+        q_s = q_s.exp()
+        q_s = (1 - epsilon) * (q_s / q_s.sum()) + (epsilon / len(q_s)) * torch.ones(q_s.shape)
+        q_s = q_s.squeeze(0)
+        prob_dist = [float(i) / sum(q_s.tolist()) for i in q_s.tolist()]
+        action = np.random.choice(np.arange(0, len(q_s)), p=prob_dist)
+        return action, new_hidden
+
     def max_batch(self, s_batch, h0_batch, h1_batch):
         with torch.no_grad():
             q_s, nh_batch = self.q_network(s_batch, h0_batch, h1_batch)
@@ -74,16 +88,20 @@ class Agent(object):
         self.target_q_func.load_model(self.q_func.get_model())
 
     # take action under epsilon-greedy policy
-    def action(self, state, hidden0, hidden1, epsilon):
+    def action(self, state, hidden0, hidden1, epsilon, beta):
         s_tensor = torch.from_numpy(state).unsqueeze(0).to(device=self.device, dtype=torch.float)
         h0_tensor = hidden0.unsqueeze(0)
         h1_tensor = hidden1.unsqueeze(0)
-        q_argmax, new_hidden = self.q_func.argmax(s_tensor, h0_tensor, h1_tensor)
+        action, new_hidden = self.q_func.argmax_exp3(s_tensor, h0_tensor, h1_tensor, epsilon, beta)
 
-        if np.random.uniform() <= epsilon:
-            return np.random.randint(0, self.env.n_action), new_hidden
-        else:
-            return q_argmax, new_hidden
+        # q_argmax, new_hidden = self.q_func.argmax(s_tensor, h0_tensor, h1_tensor)
+
+        # if np.random.uniform() <= epsilon:
+        #     return np.random.randint(0, self.env.n_action), new_hidden
+        # else:
+        #     return q_argmax, new_hidden
+
+        return action, new_hidden
 
     # train the agent with a mini-batch of transition (s, h, a, r, s2, h2)
     # due to env we do not need "done" here

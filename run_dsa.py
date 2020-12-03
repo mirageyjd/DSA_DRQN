@@ -23,7 +23,7 @@ if __name__ == "__main__":
         agents = [Agent(env=env, device=device, lstm_hidden_size=lstm_hidden_size) for i in range(num_user)]
         train_agent(env=env, device=device, exp_name=exp_name, agents=agents, num_it=10000, num_ep=5, max_ts=100,
                     target_update_freq=5, gamma=1.0, lstm_hidden_size=lstm_hidden_size, eps_start=1.0, eps_end=0.01,
-                    eps_end_it=1000)
+                    eps_end_it=1000, beta_start=1, beta_end=20)
     elif args.mode == 'eval':
         env = DsaCliqueEnv(
             num_user=num_user, num_channel=num_channel, r_fail=-1, r_idle=0, r_succeed=1)

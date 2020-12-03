@@ -6,7 +6,7 @@ import os
 
 
 def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_update_freq, gamma, lstm_hidden_size,
-                eps_start, eps_end, eps_end_it):
+                eps_start, eps_end, eps_end_it, beta_start, beta_end):
     """
     env:                environment
     device:             cpu or gpu
@@ -43,6 +43,7 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
 
     for it in tqdm(range(1, num_it + 1)):
         epsilon = eps_start - (eps_start - eps_end * (it - 1) / (eps_end_it - 1)) if it <= eps_end_it else eps_end
+        beta = beta_start + (it - 1) * (beta_end - beta_start) / (num_it - 1)
 
         # sampling from environment
         cnt = 0
@@ -56,7 +57,7 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
             h21 = h1.clone()
             for t in range(0, max_ts):
                 for j in range(env.num_user):
-                    a[j], (h20[j], h21[j]) = agents[j].action(s[j], h0[j], h1[j], epsilon)
+                    a[j], (h20[j], h21[j]) = agents[j].action(s[j], h0[j], h1[j], epsilon, beta)
                 s2, r, done, channel_status = env.step(a)
 
                 # collect training samples in batch
