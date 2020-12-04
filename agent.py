@@ -42,7 +42,7 @@ class QFunction(object):
             q_s, new_hidden = self.q_network(state, hidden0, hidden1)
         # Calculate the softmax prob dist
         q_s *= beta
-        q_s = q_s.exp()
+        q_s = (q_s - q_s.max()).exp()
         q_s = (1 - epsilon) * (q_s / q_s.sum()) + (epsilon / len(q_s)) * torch.ones(q_s.shape).to(device=self.device)
         q_s = q_s.squeeze(0)
         prob_dist = [float(i) / sum(q_s.tolist()) for i in q_s.tolist()]
