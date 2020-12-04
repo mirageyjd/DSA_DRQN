@@ -29,6 +29,11 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     log_file = open(log_dir + 'log.txt', 'w+')
+    log_file.write('# of users: {}\n'.format(str(env.num_user)))
+    log_file.write('# of channels: {}\n'.format(str(env.num_channel)))
+    log_file.write('R_fail: {}\n'.format(str(env.r_fail)))
+    log_file.write('R_idle: {}\n'.format(str(env.r_idle)))
+    log_file.write('R_succeed: {}\n'.format(str(env.r_succeed)))
 
     batch_size = num_ep * max_ts
     s_batch = torch.empty((env.num_user, batch_size, env.n_observation), dtype=torch.float).to(device=device)
@@ -96,7 +101,7 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
         torch.save(model.state_dict(), log_dir + 'agent_' + str(i) + '.model')
 
 
-def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm_hidden_size):
+def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm_hidden_size, beta):
 
     log_dir = './' + exp_name + '/'
     if not os.path.exists(log_dir):
@@ -130,7 +135,7 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
 
         for t in range(max_ts):
             for j in range(env.num_user):
-                a[j], (h20[j], h21[j]) = agents[j].action(s[j], h0[j], h1[j], epsilon)
+                a[j], (h20[j], h21[j]) = agents[j].action(s[j], h0[j], h1[j], epsilon, beta)
             s2, r, done, channel_status = env.step(a)
             user_r += r
 
