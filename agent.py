@@ -9,10 +9,10 @@ class QNetwork(nn.Module):
         super(QNetwork, self).__init__()
         self.lstm = nn.LSTM(input_size=env.n_observation, hidden_size=lstm_hidden_size, num_layers=1)
         self.fc_1 = nn.Sequential(
-            nn.Linear(64, 32),
+            nn.Linear(32, 16),
             nn.ReLU(True)
         )
-        self.fc_2 = nn.Linear(32, env.n_action)
+        self.fc_2 = nn.Linear(16, env.n_action)
 
     def forward(self, state_in, hidden0, hidden1):
         hidden = (hidden0.unsqueeze(0), hidden1.unsqueeze(0))
