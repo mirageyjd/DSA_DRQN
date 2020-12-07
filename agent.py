@@ -46,6 +46,7 @@ class QFunction(object):
         q_s = (1 - epsilon) * (q_s / q_s.sum()) + (epsilon / len(q_s)) * torch.ones(q_s.shape).to(device=self.device)
         q_s = q_s.squeeze(0)
         prob_dist = [float(i) / sum(q_s.tolist()) for i in q_s.tolist()]
+        # print(prob_dist)
         action = np.random.choice(np.arange(0, len(q_s)), p=prob_dist)
         return action, new_hidden
 

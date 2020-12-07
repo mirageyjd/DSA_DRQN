@@ -47,7 +47,7 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
     a = np.zeros(env.num_user, dtype=int)
 
     for it in tqdm(range(1, num_it + 1)):
-        epsilon = eps_start - (eps_start - eps_end * (it - 1) / (eps_end_it - 1)) if it <= eps_end_it else eps_end
+        # epsilon = eps_start - (eps_start - eps_end * (it - 1) / (eps_end_it - 1)) if it <= eps_end_it else eps_end
         beta = beta_start + (it - 1) * (beta_end - beta_start) / (num_it - 1)
 
         # sampling from environment
@@ -61,8 +61,11 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
             h20 = h0.clone()
             h21 = h1.clone()
             for t in range(0, max_ts):
+
+                epsilon = 1 - (1 - 0.01 * (t - 1) / (max_ts / 10 - 1)) if t <= max_ts / 10 else 0.01
+
                 for j in range(env.num_user):
-                    a[j], (h20[j], h21[j]) = agents[j].action(s[j], h0[j], h1[j], epsilon, beta)
+                    a[j], (h20[j], h21[j]) = agents.action(s[j], h0[j], h1[j], epsilon, beta)
                 s2, r, done, channel_status = env.step(a)
 
                 # collect training samples in batch
@@ -84,20 +87,21 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
 
         # training
         for j in range(env.num_user):
-            agents[j].train(s_batch[j], h0_batch[j], h1_batch[j], a_batch[j], r_batch[j], s2_batch[j], h20_batch[j],
+            agents.train(s_batch[j], h0_batch[j], h1_batch[j], a_batch[j], r_batch[j], s2_batch[j], h20_batch[j],
                             h21_batch[j], gamma)
 
         if it % target_update_freq == 0:
             for j in range(env.num_user):
-                agents[j].update_target()
+                agents.update_target()
 
         # print reward
         if it % 100 == 0:
             log_file.write('Iteration {}: avg reward is {:.4f}, channel utilization is {:.4f}\n'.format(it, avg_r / cnt,
                                                                                                       avg_utils / cnt))
+            log_file.flush()
     log_file.close()
     for i in range(env.num_user):
-        model = agents[i].get_model()
+        model = agents.get_model()
         torch.save(model.state_dict(), log_dir + 'agent_' + str(i) + '.model')
 
 
@@ -109,13 +113,16 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
     log_file = open(log_dir + 'eval_log.txt', 'w+')
 
     # Load trained networks and build agents
-    agents = []
-    for i in range(len(model_files)):
-        a = Agent(env=env, device=device, lstm_hidden_size=lstm_hidden_size)
-        a.load_model_from_state_dict(torch.load(model_files[i]))
-        agents.append(a)
-    
+    # agents = []
+    # for i in range(len(model_files)):
+    #     a = Agent(env=env, device=device, lstm_hidden_size=lstm_hidden_size)
+    #     a.load_model_from_state_dict(torch.load(model_files[i]))
+    #     agents.append(a)
+    agents = Agent(env=env, device=device, lstm_hidden_size=lstm_hidden_size)
+    agents.load_model_from_state_dict(torch.load(model_files[0]))
+
     epsilon = eps_end
+    t_thresh = 3
 
     # Evaluation
     for ep in range(num_ep):
@@ -135,20 +142,21 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
 
         for t in range(max_ts):
             for j in range(env.num_user):
-                a[j], (h20[j], h21[j]) = agents[j].action(s[j], h0[j], h1[j], epsilon, beta)
+                a[j], (h20[j], h21[j]) = agents.action(s[j], h0[j], h1[j], epsilon, beta)
             s2, r, done, channel_status = env.step(a)
-            user_r += r
 
-            avg_r += r.sum() / r.size
-            avg_utils += np.sum(channel_status == 1) / channel_status.size
+            if t >= t_thresh:
+                user_r += r
+                avg_r += r.sum() / r.size
+                avg_utils += np.sum(channel_status == 1) / channel_status.size
             s = s2
             h0 = h20.clone()
             h1 = h21.clone()
 
         # Calculate the avg reward / timestamp
-        user_r /= max_ts
-        avg_r /= max_ts
-        avg_utils /= max_ts
+        user_r /= (max_ts - t_thresh)
+        avg_r /= (max_ts - t_thresh)
+        avg_utils /= (max_ts - t_thresh)
         log_file.write('Episode {}: Eval results:\n'.format(str(ep)))
         log_file.write('Avg reward: {:.4f} \nAvg channel util: {:.4f}\n'.format(
             avg_r, avg_utils))
