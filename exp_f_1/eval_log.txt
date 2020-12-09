@@ -1,0 +1,35 @@
+Episode 0: Eval results:
+Avg reward: 0.6775 
+Avg channel util: 0.8850
+User 0 avg reward / timestamp: 0.6550
+User 1 avg reward / timestamp: 0.7200
+User 2 avg reward / timestamp: 0.6750
+User 3 avg reward / timestamp: 0.6600
+Episode 1: Eval results:
+Avg reward: 0.7113 
+Avg channel util: 0.9350
+User 0 avg reward / timestamp: 0.7300
+User 1 avg reward / timestamp: 0.7000
+User 2 avg reward / timestamp: 0.7050
+User 3 avg reward / timestamp: 0.7100
+Episode 2: Eval results:
+Avg reward: 0.6800 
+Avg channel util: 0.8800
+User 0 avg reward / timestamp: 0.6950
+User 1 avg reward / timestamp: 0.6750
+User 2 avg reward / timestamp: 0.6700
+User 3 avg reward / timestamp: 0.6800
+Episode 3: Eval results:
+Avg reward: 0.6750 
+Avg channel util: 0.8700
+User 0 avg reward / timestamp: 0.6700
+User 1 avg reward / timestamp: 0.6950
+User 2 avg reward / timestamp: 0.6750
+User 3 avg reward / timestamp: 0.6600
+Episode 4: Eval results:
+Avg reward: 0.6837 
+Avg channel util: 0.8900
+User 0 avg reward / timestamp: 0.6700
+User 1 avg reward / timestamp: 0.6950
+User 2 avg reward / timestamp: 0.6850
+User 3 avg reward / timestamp: 0.6850
