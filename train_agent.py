@@ -1,6 +1,9 @@
 import torch
 import numpy as np
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+from matplotlib.collections import PatchCollection
 from agent import Agent
 import os
 
@@ -121,12 +124,8 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
     # Evaluation
     for ep in range(num_ep):
         s = env.reset()
-        h0 = torch.normal(mean=0,
-                        std=0.01,
-                        size=(env.num_user, lstm_hidden_size)).to(device=device)
-        h1 = torch.normal(mean=0,
-                        std=0.01,
-                        size=(env.num_user, lstm_hidden_size)).to(device=device)
+        h0 = torch.normal(mean=0, std=0.01, size=(env.num_user, lstm_hidden_size)).to(device=device)
+        h1 = torch.normal(mean=0, std=0.01, size=(env.num_user, lstm_hidden_size)).to(device=device)
         h20 = h0.clone()
         h21 = h1.clone()
         a = np.zeros(env.num_user, dtype=int)
@@ -157,3 +156,38 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
             log_file.write('User {} avg reward / timestamp: {:.4f}\n'.format(i, user_r[i]))
 
     log_file.close()
+
+
+def draw_episode(env, device, model_files, max_ts, eps_end, lstm_hidden_size, beta):
+    # Load trained networks and build agents
+    agents = []
+    for i in range(len(model_files)):
+        a = Agent(env=env, device=device, lstm_hidden_size=lstm_hidden_size)
+        a.load_model_from_state_dict(torch.load(model_files[i]))
+        agents.append(a)
+
+    epsilon = eps_end
+
+    color = ['white', 'orange', 'yellow', 'red', 'lightgreen']
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    s = env.reset()
+    h0 = torch.normal(mean=0, std=0.01, size=(env.num_user, lstm_hidden_size)).to(device=device)
+    h1 = torch.normal(mean=0, std=0.01, size=(env.num_user, lstm_hidden_size)).to(device=device)
+    h20 = h0.clone()
+    h21 = h1.clone()
+    a = np.zeros(env.num_user, dtype=int)
+
+    for t in range(max_ts):
+        for j in range(env.num_user):
+            a[j], (h20[j], h21[j]) = agents[j].action(s[j], h0[j], h1[j], epsilon, beta)
+            ax.add_patch(Rectangle((t, j), 1, 1, angle=0.0, color=color[a[j]]))
+        s2, r, done, channel_status = env.step(a)
+        s = s2
+        h0 = h20.clone()
+        h1 = h21.clone()
+
+    plt.xlim([0, max_ts])
+    plt.ylim([0, env.num_user])
+    plt.show()
