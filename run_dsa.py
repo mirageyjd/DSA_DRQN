@@ -38,7 +38,7 @@ if __name__ == "__main__":
     elif args.mode == 'draw_episode':
         env = DsaCliqueEnv(num_user=num_user, num_channel=num_channel, r_fail=r_fail, r_idle=r_idle,
                            r_succeed=r_succeed, r_fairness=r_fairness)
-        draw_episode(env=env, device=device, model_files=model_files, max_ts=100, eps_end=0.01,
+        draw_episode(env=env, device=device, exp_name=exp_name, model_files=model_files, max_ts=100, eps_end=0.01,
                      lstm_hidden_size=lstm_hidden_size, beta=20)
     else:
         raise Exception("Unsupported mode.")
