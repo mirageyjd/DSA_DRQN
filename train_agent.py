@@ -95,6 +95,7 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
         if it % 100 == 0:
             log_file.write('Iteration {}: avg reward is {:.4f}, channel utilization is {:.4f}\n'.format(it, avg_r / cnt,
                                                                                                       avg_utils / cnt))
+            log_file.flush()
     log_file.close()
     for i in range(env.num_user):
         model = agents[i].get_model()
