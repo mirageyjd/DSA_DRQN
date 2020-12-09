@@ -158,7 +158,7 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
     log_file.close()
 
 
-def draw_episode(env, device, model_files, max_ts, eps_end, lstm_hidden_size, beta):
+def draw_episode(env, device, exp_name, model_files, max_ts, eps_end, lstm_hidden_size, beta):
     # Load trained networks and build agents
     agents = []
     for i in range(len(model_files)):
@@ -191,3 +191,4 @@ def draw_episode(env, device, model_files, max_ts, eps_end, lstm_hidden_size, be
     plt.xlim([0, max_ts])
     plt.ylim([0, env.num_user])
     plt.show()
+    plt.savefig('./' + exp_name + '/' + 'episode.png')
