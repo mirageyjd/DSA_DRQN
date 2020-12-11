@@ -1,0 +1,35 @@
+Episode 0: Eval results:
+Avg reward: 0.735 
+Avg channel util: 0.970
+User 0: avg reward 0.490; sending rate 0.020
+User 1: avg reward 0.960; sending rate 0.980
+User 2: avg reward 0.990; sending rate 1.000
+User 3: avg reward 0.500; sending rate 0.000
+Episode 1: Eval results:
+Avg reward: 0.730 
+Avg channel util: 0.960
+User 0: avg reward 0.495; sending rate 0.030
+User 1: avg reward 0.955; sending rate 0.970
+User 2: avg reward 0.970; sending rate 1.000
+User 3: avg reward 0.500; sending rate 0.000
+Episode 2: Eval results:
+Avg reward: 0.715 
+Avg channel util: 0.940
+User 0: avg reward 0.485; sending rate 0.050
+User 1: avg reward 0.940; sending rate 1.000
+User 2: avg reward 0.945; sending rate 0.970
+User 3: avg reward 0.490; sending rate 0.020
+Episode 3: Eval results:
+Avg reward: 0.720 
+Avg channel util: 0.940
+User 0: avg reward 0.495; sending rate 0.010
+User 1: avg reward 0.925; sending rate 0.970
+User 2: avg reward 0.970; sending rate 1.000
+User 3: avg reward 0.490; sending rate 0.020
+Episode 4: Eval results:
+Avg reward: 0.721 
+Avg channel util: 0.945
+User 0: avg reward 0.490; sending rate 0.020
+User 1: avg reward 0.940; sending rate 0.980
+User 2: avg reward 0.965; sending rate 0.990
+User 3: avg reward 0.490; sending rate 0.020

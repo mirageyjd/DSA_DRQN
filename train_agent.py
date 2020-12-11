@@ -129,12 +129,15 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
         h21 = h1.clone()
         a = np.zeros(env.num_user, dtype=int)
         user_r = np.zeros(env.num_user, dtype=float)
+        user_s = np.zeros(env.num_user, dtype=float)
         avg_r = 0.0
         avg_utils = 0.0
 
         for t in range(max_ts):
             for j in range(env.num_user):
                 a[j], (h20[j], h21[j]) = agents[j].action(s[j], h0[j], h1[j], epsilon, beta)
+                if a[j] > 0:
+                    user_s[j] += 1
             s2, r, done, channel_status = env.step(a)
             user_r += r
 
@@ -144,15 +147,16 @@ def eval_agent(env, device, exp_name, model_files, num_ep, max_ts, eps_end, lstm
             h0 = h20.clone()
             h1 = h21.clone()
 
-        # Calculate the avg reward / timestamp
+        # Calculate the avg reward and sending rate
         user_r /= max_ts
+        user_s /= max_ts
         avg_r /= max_ts
         avg_utils /= max_ts
         log_file.write('Episode {}: Eval results:\n'.format(str(ep)))
-        log_file.write('Avg reward: {:.4f} \nAvg channel util: {:.4f}\n'.format(
+        log_file.write('Avg reward: {:.3f} \nAvg channel util: {:.3f}\n'.format(
             avg_r, avg_utils))
         for i in range(len(user_r)):
-            log_file.write('User {} avg reward / timestamp: {:.4f}\n'.format(i, user_r[i]))
+            log_file.write('User {}: avg reward {:.3f}; sending rate {:.3f}\n'.format(i, user_r[i], user_s[i]))
 
     log_file.close()
 

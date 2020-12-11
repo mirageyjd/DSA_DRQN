@@ -4,9 +4,9 @@ from train_agent import train_agent, eval_agent, draw_episode
 import argparse
 
 device = 'cpu'
-exp_name = 'exp_42'
-num_user = 4
-num_channel = 2
+exp_name = 'exp_104_f'
+num_user = 10
+num_channel = 4
 lstm_hidden_size = 32
 model_files = ['./' + exp_name + '/agent_' +
                str(i) + '.model' for i in range(num_user)]
@@ -26,7 +26,7 @@ if __name__ == "__main__":
         env = DsaCliqueEnv(num_user=num_user, num_channel=num_channel, r_fail=r_fail, r_idle=r_idle,
                            r_succeed=r_succeed, r_fairness=r_fairness)
         agents = [Agent(env=env, device=device, lstm_hidden_size=lstm_hidden_size) for i in range(num_user)]
-        train_agent(env=env, device=device, exp_name=exp_name, agents=agents, num_it=10000, num_ep=5, max_ts=100,
+        train_agent(env=env, device=device, exp_name=exp_name, agents=agents, num_it=20000, num_ep=5, max_ts=100,
                     target_update_freq=5, gamma=0.9, lstm_hidden_size=lstm_hidden_size, eps_start=0.05, eps_end=0.01,
                     eps_end_it=1000, beta_start=1, beta_end=20)
     elif args.mode == 'eval':
