@@ -16,6 +16,7 @@ class DsaCliqueEnv(object):
         # reward of success will be penalized by a factor (sigmoid function)
         # When r_fail = 0 and r_succeed = 1, reward of success will drop to 0.5 at x = f_thre
         # x will be cleared if 1. switch to another channel 2. idle 3. conflict
+        self.f_thre = None
         if r_fairness is not None and r_fairness > 0:
             self.delta = 1 + np.exp(-1)
             self.f_thre = r_fairness

@@ -3,7 +3,6 @@ import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
-from matplotlib.collections import PatchCollection
 from agent import Agent
 import os
 
@@ -50,8 +49,8 @@ def train_agent(env, device, exp_name, agents, num_it, num_ep, max_ts, target_up
     a = np.zeros(env.num_user, dtype=int)
 
     for it in tqdm(range(1, num_it + 1)):
-        epsilon = eps_start - (eps_start - eps_end * (it - 1) / (eps_end_it - 1)) if it <= eps_end_it else eps_end
-        beta = beta_start + (it - 1) * (beta_end - beta_start) / (num_it - 1)
+        epsilon = eps_start - (eps_start - eps_end) * (it - 1) / eps_end_it if it <= eps_end_it else eps_end
+        beta = beta_start + (beta_end - beta_start) * (it - 1) / eps_end_it if it <= eps_end_it else beta_end
 
         # sampling from environment
         cnt = 0

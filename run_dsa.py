@@ -4,7 +4,7 @@ from train_agent import train_agent, eval_agent, draw_episode
 import argparse
 
 device = 'cpu'
-exp_name = 'exp_f_1'
+exp_name = 'exp_42'
 num_user = 4
 num_channel = 2
 lstm_hidden_size = 32
