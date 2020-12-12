@@ -1,0 +1,56 @@
+# of users: 10
+# of channels: 4
+R_fail: 0
+R_idle: 0.5
+R_succeed: 1
+Load models from model files
+Iteration 10100: avg reward is 0.5411, channel utilization is 0.5510
+Iteration 10200: avg reward is 0.5394, channel utilization is 0.5310
+Iteration 10300: avg reward is 0.5375, channel utilization is 0.5650
+Iteration 10400: avg reward is 0.5259, channel utilization is 0.5580
+Iteration 10500: avg reward is 0.5363, channel utilization is 0.5540
+Iteration 10600: avg reward is 0.5294, channel utilization is 0.5615
+Iteration 10700: avg reward is 0.5540, channel utilization is 0.6020
+Iteration 10800: avg reward is 0.5257, channel utilization is 0.5220
+Iteration 10900: avg reward is 0.5341, channel utilization is 0.5345
+Iteration 11000: avg reward is 0.5245, channel utilization is 0.5630
+Iteration 11100: avg reward is 0.5440, channel utilization is 0.5260
+Iteration 11200: avg reward is 0.5445, channel utilization is 0.5575
+Iteration 11300: avg reward is 0.5472, channel utilization is 0.5430
+Iteration 11400: avg reward is 0.5374, channel utilization is 0.5275
+Iteration 11500: avg reward is 0.5210, channel utilization is 0.5510
+Iteration 11600: avg reward is 0.5365, channel utilization is 0.5645
+Iteration 11700: avg reward is 0.5382, channel utilization is 0.5950
+Iteration 11800: avg reward is 0.5559, channel utilization is 0.5750
+Iteration 11900: avg reward is 0.5503, channel utilization is 0.5670
+Iteration 12000: avg reward is 0.5519, channel utilization is 0.5675
+Iteration 12100: avg reward is 0.5569, channel utilization is 0.5685
+Iteration 12200: avg reward is 0.5544, channel utilization is 0.6410
+Iteration 12300: avg reward is 0.5700, channel utilization is 0.6145
+Iteration 12400: avg reward is 0.5530, channel utilization is 0.6280
+Iteration 12500: avg reward is 0.5577, channel utilization is 0.5825
+Iteration 12600: avg reward is 0.5571, channel utilization is 0.6015
+Iteration 12700: avg reward is 0.5468, channel utilization is 0.6215
+Iteration 12800: avg reward is 0.5637, channel utilization is 0.6330
+Iteration 12900: avg reward is 0.5547, channel utilization is 0.6190
+Iteration 13000: avg reward is 0.5763, channel utilization is 0.6550
+Iteration 13100: avg reward is 0.5592, channel utilization is 0.6245
+Iteration 13200: avg reward is 0.5532, channel utilization is 0.6070
+Iteration 13300: avg reward is 0.5646, channel utilization is 0.6320
+Iteration 13400: avg reward is 0.5517, channel utilization is 0.6235
+Iteration 13500: avg reward is 0.5494, channel utilization is 0.6175
+Iteration 13600: avg reward is 0.5709, channel utilization is 0.6075
+Iteration 13700: avg reward is 0.5639, channel utilization is 0.6700
+Iteration 13800: avg reward is 0.5690, channel utilization is 0.7170
+Iteration 13900: avg reward is 0.5756, channel utilization is 0.6715
+Iteration 14000: avg reward is 0.5419, channel utilization is 0.6005
+Iteration 14100: avg reward is 0.5808, channel utilization is 0.6990
+Iteration 14200: avg reward is 0.5713, channel utilization is 0.6805
+Iteration 14300: avg reward is 0.5680, channel utilization is 0.6840
+Iteration 14400: avg reward is 0.5717, channel utilization is 0.6760
+Iteration 14500: avg reward is 0.5815, channel utilization is 0.6835
+Iteration 14600: avg reward is 0.5778, channel utilization is 0.6875
+Iteration 14700: avg reward is 0.5742, channel utilization is 0.6835
+Iteration 14800: avg reward is 0.5756, channel utilization is 0.6910
+Iteration 14900: avg reward is 0.5672, channel utilization is 0.6705
+Iteration 15000: avg reward is 0.5783, channel utilization is 0.6995
